@@ -294,6 +294,44 @@
   .copy-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
   .copy-btn.copied { border-color: var(--green); color: var(--green); background: var(--green-dim); }
 
+  /* ── CREDENTIALS BOX ── */
+  .cred-box {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 16px; margin-bottom: 20px;
+  }
+  .cred-box-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  }
+  .cred-box-title {
+    display: flex; align-items: center; gap: 8px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 13px;
+    font-weight: 600; color: var(--accent); letter-spacing: -0.3px;
+  }
+  .cred-toggle {
+    font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500;
+    padding: 6px 12px; border-radius: 6px;
+    border: 1px solid var(--border); background: var(--surface);
+    color: var(--text-dim); cursor: pointer; transition: all 0.15s; white-space: nowrap;
+  }
+  .cred-toggle:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
+  .cred-body { display: none; margin-top: 14px; }
+  .cred-box.revealed .cred-body { display: flex; flex-direction: column; gap: 8px; }
+  .cred-row {
+    display: flex; align-items: center; gap: 10px;
+    padding-top: 8px; border-top: 1px solid var(--border);
+  }
+  .cred-row:first-child { padding-top: 0; border-top: none; }
+  .cred-label {
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+    color: var(--text-muted); min-width: 80px;
+  }
+  .cred-value {
+    font-family: 'IBM Plex Mono', monospace; font-size: 13px;
+    color: var(--text); background: var(--bg);
+    border: 1px solid var(--border); border-radius: 4px;
+    padding: 3px 8px; word-break: break-all; flex: 1;
+  }
+
   .no-results { text-align: center; padding: 60px 20px; color: var(--text-muted); font-size: 15px; }
   .no-results kbd {
     display: inline-block; padding: 2px 8px; background: var(--surface);
@@ -347,6 +385,27 @@
 <div class="filter-bar" id="filterBar"></div>
 
 <div class="main">
+  <div class="cred-box" id="credBox">
+    <div class="cred-box-head">
+      <div class="cred-box-title">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <span>Credentials</span>
+      </div>
+      <button class="cred-toggle" id="credToggle" onclick="toggleCreds()">Show Credentials</button>
+    </div>
+    <div class="cred-body" id="credBody">
+      <div class="cred-row">
+        <span class="cred-label">Username</span>
+        <code class="cred-value">99</code>
+        <button class="copy-btn" onclick="copyText(this,'99')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+      </div>
+      <div class="cred-row">
+        <span class="cred-label">Password</span>
+        <code class="cred-value">59AZuTdepGqP7qEDtUD3Q7!</code>
+        <button class="copy-btn" onclick="copyText(this,'59AZuTdepGqP7qEDtUD3Q7!')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+      </div>
+    </div>
+  </div>
   <div id="content"></div>
 </div>
 
@@ -413,7 +472,7 @@ const UVP_DATA = [
   {"client":"ShoreAcres","sysCode":"SA","server":"AWS-uVisionPlus12","url":"https://shore.avrcloudsystem.com:8989/client"},
   {"client":"City of Hooks","sysCode":"HK","server":"AWS-uVisionPlus14","url":"https://hooks.avrcloudsystem.com:8979/client"},
   {"client":"City of Opelousas","sysCode":"OP","server":"AWS-uVisionPlus14","url":"https://opelousas.avrcloudsystem.com:8980/client/"},
-  {"client":"PeopleServices","sysCode":"PS","server":"AWS-uVisionPlus14","url":""},
+  {"client":"PeopleServices","sysCode":"PS","server":"AWS-uVisionPlus14","url":"https://peoples.avrcloudsystem.com:8977/client/Fluid.html"},
   {"client":"Harris WCID #70","sysCode":"70","server":"AWS-uVisionPlus14","url":"https://harris70.avrcloudsystem.com:8985/client/"},
   {"client":"Town of New Brockton","sysCode":"NB","server":"AWS-uVisionPlus14","url":"https://newbrockton.avrcloudsystem.com:8978/client"},
   {"client":"Mountain House","sysCode":"MH","server":"AWS-uVisionPlus15","url":"https://mountain.avrcloudsystem.com:8983/client"},
@@ -1808,6 +1867,13 @@ function copyText(btn, text) {
     btn.classList.add('copied');
     setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('copied'); }, 1500);
   });
+}
+
+function toggleCreds() {
+  const box = document.getElementById('credBox');
+  const btn = document.getElementById('credToggle');
+  const revealed = box.classList.toggle('revealed');
+  btn.textContent = revealed ? 'Hide Credentials' : 'Show Credentials';
 }
 
 function esc(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
